@@ -1770,7 +1770,7 @@ PrefabInstance:
     - target: {fileID: 1528804254978025089, guid: be57e4f831137477cb30bcb27b6d9d7b,
         type: 3}
       propertyPath: m_Name
-      value: card5 (1)
+      value: card10
       objectReference: {fileID: 0}
     - target: {fileID: 1528804254978025090, guid: be57e4f831137477cb30bcb27b6d9d7b,
         type: 3}
@@ -1900,7 +1900,7 @@ PrefabInstance:
     - target: {fileID: 1528804254110188897, guid: be57e4f831137477cb30bcb27b6d9d7b,
         type: 3}
       propertyPath: m_textInfo.characterCount
-      value: 0
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 1528804254110188897, guid: be57e4f831137477cb30bcb27b6d9d7b,
         type: 3}
@@ -1910,22 +1910,22 @@ PrefabInstance:
     - target: {fileID: 1528804254110188897, guid: be57e4f831137477cb30bcb27b6d9d7b,
         type: 3}
       propertyPath: m_textInfo.wordCount
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1528804254110188897, guid: be57e4f831137477cb30bcb27b6d9d7b,
         type: 3}
       propertyPath: m_textInfo.lineCount
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1528804254110188897, guid: be57e4f831137477cb30bcb27b6d9d7b,
         type: 3}
       propertyPath: m_textInfo.pageCount
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1528804254110188897, guid: be57e4f831137477cb30bcb27b6d9d7b,
         type: 3}
       propertyPath: m_text
-      value: 5
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 1528804254110188897, guid: be57e4f831137477cb30bcb27b6d9d7b,
         type: 3}
