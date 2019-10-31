@@ -3,23 +3,40 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
+public enum FieldType
+{
+    SELF_HAND,
+    SELF_FIELD,
+    ENEMY_HAND,
+    ENEMY_FIELD
+}
+
+
 public class DropPlace : MonoBehaviour, IDropHandler, IPointerEnterHandler, IPointerExitHandler
 {
+    public FieldType Type;
+
     public void OnDrop(PointerEventData eventData)
     {
-        Card card = eventData.pointerDrag.GetComponent<Card>();
+        if (Type != FieldType.SELF_FIELD)
+            return;
+
+        //Получаем объект (карту), которую мы переносим над областью игрового полz
+        CardMovement card = eventData.pointerDrag.GetComponent<CardMovement>();
 
         if (card)
         {
+            //устанавливаем в качестве дефолтного родителя себя
             card.defaultParent = transform;
         }
     }
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        if (eventData.pointerDrag == null) return;
+        //проверяется, перетягивается ли какой-нибудь объект
+        if (eventData.pointerDrag == null || Type == FieldType.ENEMY_FIELD || Type == FieldType.ENEMY_HAND) return;
 
-        Card card = eventData.pointerDrag.GetComponent<Card>();
+        CardMovement card = eventData.pointerDrag.GetComponent<CardMovement>();
 
         if (card)
             card.defaultTempCardParent = transform;
@@ -27,9 +44,10 @@ public class DropPlace : MonoBehaviour, IDropHandler, IPointerEnterHandler, IPoi
 
     public void OnPointerExit(PointerEventData eventData)
     {
+        //проверяется, перетягивается ли какой-нибудь объект
         if (eventData.pointerDrag == null) return;
 
-        Card card = eventData.pointerDrag.GetComponent<Card>();
+        CardMovement card = eventData.pointerDrag.GetComponent<CardMovement>();
 
         if (card && card.defaultTempCardParent == transform)
             card.defaultTempCardParent = card.defaultParent;
