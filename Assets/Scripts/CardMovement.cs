@@ -9,7 +9,7 @@ public class CardMovement : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
     private Vector3 offset;//значение отступа от центра карты
     public Transform defaultParent, defaultTempCardParent;
     GameObject tempCardGO; //временная карта, которая будет представлять призрак передвигающейся карты
-    LogicManager  LogicManager;
+    public LogicManager  LogicManager;
     public bool IsDraggable;
 
     void Awake()
@@ -29,7 +29,8 @@ public class CardMovement : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
 
         defaultParent = defaultTempCardParent =  transform.parent;
 
-        IsDraggable = defaultParent.GetComponent<DropPlace>().Type == FieldType.SELF_HAND && LogicManager.isActiveAndEnabled;
+        IsDraggable = (defaultParent.GetComponent<DropPlace>().Type == FieldType.SELF_HAND ||
+            defaultParent.GetComponent<DropPlace>().Type == FieldType.SELF_FIELD) && LogicManager.isActiveAndEnabled;
 
         if (!IsDraggable)
             return;
@@ -73,6 +74,7 @@ public class CardMovement : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
             tempCardGO.transform.SetParent(defaultTempCardParent);
         }
 
+        if(defaultParent.GetComponent<DropPlace>().Type != FieldType.SELF_FIELD)
         CheckPosition();
     }
       

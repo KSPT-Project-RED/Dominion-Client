@@ -24,8 +24,11 @@ public class DropPlace : MonoBehaviour, IDropHandler, IPointerEnterHandler, IPoi
         //Получаем объект (карту), которую мы переносим над областью игрового полz
         CardMovement card = eventData.pointerDrag.GetComponent<CardMovement>();
 
-        if (card)
+        if (card && card.LogicManager.PlayerFieldCards.Count <= 5 &&
+            card.LogicManager.IsPlayerTurn)
         {
+            card.LogicManager.PlayerFieldCards.Remove(card.GetComponent<CardInfo>());
+            card.LogicManager.PlayerFieldCards.Add(card.GetComponent<CardInfo>());
             //устанавливаем в качестве дефолтного родителя себя
             card.defaultParent = transform;
         }
@@ -34,7 +37,10 @@ public class DropPlace : MonoBehaviour, IDropHandler, IPointerEnterHandler, IPoi
     public void OnPointerEnter(PointerEventData eventData)
     {
         //проверяется, перетягивается ли какой-нибудь объект
-        if (eventData.pointerDrag == null || Type == FieldType.ENEMY_FIELD || Type == FieldType.ENEMY_HAND) return;
+        if (eventData.pointerDrag == null ||
+            Type == FieldType.ENEMY_FIELD ||
+            Type == FieldType.ENEMY_HAND ||
+            Type == FieldType.SELF_HAND) return;
 
         CardMovement card = eventData.pointerDrag.GetComponent<CardMovement>();
 
