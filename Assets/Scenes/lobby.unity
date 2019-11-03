@@ -835,6 +835,7 @@ GameObject:
   - component: {fileID: 643917747}
   - component: {fileID: 643917746}
   - component: {fileID: 643917745}
+  - component: {fileID: 643917748}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -907,6 +908,29 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &643917748
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 643917744}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eacd89119a5c841d796143a56457d4b3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Host: 127.0.0.1
+  TcpPort: 9933
+  WSPort: 8080
+  Zone: Dominion
+  loginInput: {fileID: 1299184437}
+  passwordInput: {fileID: 1158211088}
+  emailInput: {fileID: 346664219}
+  signinButton: {fileID: 2063588668}
+  signupButton: {fileID: 2063713024}
+  submitButton: {fileID: 1878163256}
+  authLoginLabel: {fileID: 305492654}
 --- !u!1 &719130587
 GameObject:
   m_ObjectHideFlags: 0
@@ -1163,7 +1187,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -0.010498047, y: 0}
+  m_AnchoredPosition: {x: -0.009765625, y: 0}
   m_SizeDelta: {x: 0.5999756, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1047245818
@@ -2796,7 +2820,18 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1878163257}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 643917748}
+        m_MethodName: OnSubmitButtonClick
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1878163257
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3014,7 +3049,18 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 2063588669}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 643917748}
+        m_MethodName: OnSigninButtonClick
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &2063588669
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3132,7 +3178,18 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 2063713025}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 643917748}
+        m_MethodName: OnSignupButtonClick
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &2063713025
 MonoBehaviour:
   m_ObjectHideFlags: 0
