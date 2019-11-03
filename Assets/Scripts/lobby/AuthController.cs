@@ -43,6 +43,7 @@ public class AuthController : MonoBehaviour
         loginInput.text = "";
         passwordInput.text = "";
         emailInput.text = "";
+        AuthLogin.SetActive(true);
     }
 
     void Update()
