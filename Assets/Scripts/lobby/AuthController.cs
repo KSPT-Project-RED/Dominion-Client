@@ -32,6 +32,7 @@ public class AuthController : MonoBehaviour
     public Button signupButton;
     public Button submitButton;
     public TMP_Text authLoginLabel;
+    public GameObject AuthLogin;
 
     private SmartFox sfs;
     private bool firstJoin = true;
@@ -95,8 +96,22 @@ public class AuthController : MonoBehaviour
         sfs.AddEventListener(SFSEvent.USER_EXIT_ROOM, OnUserExitRoom);
         sfs.AddEventListener(SFSEvent.ROOM_ADD, OnRoomAdd);
         sfs.AddEventListener(SFSEvent.EXTENSION_RESPONSE, OnExtensionResponse);
+        sfs.AddEventListener(SFSEvent.LOGOUT, LogOut);
 
         sfs.Connect(cfg.Host, cfg.Port);
+    }
+
+    private void LogOut(BaseEvent evt)
+    {
+        Debug.Log("Logout");
+        reset();
+
+        if (firstJoin)
+        {
+            firstJoin = false;
+            OnSubmitButtonClick();
+        }
+
     }
 
     private void OnConnection(BaseEvent evt)
@@ -108,12 +123,15 @@ public class AuthController : MonoBehaviour
 
             if (firstJoin) {//сначала авторизация в качестве гостя
                 Debug.Log("On connection success1");
-                sfs.Send(new LoginRequest("", "", Zone));
+               
+                //нужно сделать гостевой вход!!!!!
+                sfs.Send(new LoginRequest("test2", "test2test2", Zone));
+                Debug.Log("On connection success2");
             }
             else
             {
                 Debug.Log("On connection success2 "+ loginInput.text +" ; "+ passwordInput.text);
-                sfs.Send(new LoginRequest(loginInput.text, passwordInput.text));
+                sfs.Send(new LoginRequest(loginInput.text, passwordInput.text, Zone));
             }
         }
         else
@@ -151,9 +169,8 @@ public class AuthController : MonoBehaviour
             }
             else if (objIn.ContainsKey("success"))
             {
-                Debug.Log("Signup Successful");
-                firstJoin = false;
-                sfs.Send(new LoginRequest(loginInput.text, passwordInput.text));
+                Debug.Log("Signup Successful"+ loginInput.text + " ; " + passwordInput.text);
+                sfs.Send(new LogoutRequest());
             }
         }
 
@@ -183,6 +200,7 @@ public class AuthController : MonoBehaviour
         {
             User user = (User) evt.Params["user"];
             Debug.Log("Hello " + user.Name);
+            AuthLogin.SetActive(false);
         }
 
     }

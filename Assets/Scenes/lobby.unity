@@ -931,6 +931,7 @@ MonoBehaviour:
   signupButton: {fileID: 2063713024}
   submitButton: {fileID: 1878163256}
   authLoginLabel: {fileID: 305492654}
+  AuthLogin: {fileID: 1047245816}
 --- !u!1 &719130587
 GameObject:
   m_ObjectHideFlags: 0
