@@ -9,6 +9,7 @@ using Sfs2X.Core;
 using Sfs2X.Requests;
 using Sfs2X.Entities.Data;
 using Sfs2X.Entities;
+using UnityEngine.SceneManagement;
 
 public class AuthController : MonoBehaviour
 {
@@ -37,6 +38,9 @@ public class AuthController : MonoBehaviour
     private SmartFox sfs;
     private bool firstJoin = true;
     private string CMD_SIGNUP = "$SignUp.Submit";
+
+    private const string EXTENSION_ID = "Dominion";
+    //private const string EXTENSION_CLASS = "sfs2x.extensions.games.tris.TrisExtension";
 
     void Start()
     {
@@ -202,6 +206,8 @@ public class AuthController : MonoBehaviour
             User user = (User) evt.Params["user"];
             Debug.Log("Hello " + user.Name);
             AuthLogin.SetActive(false);
+
+            //sfs.Send(new JoinRoomRequest("Test1"));
         }
 
     }
@@ -220,7 +226,24 @@ public class AuthController : MonoBehaviour
     private void OnRoomJoin(BaseEvent evt)
     {
         Debug.Log("On Join room");
-        
+
+        Room room = (Room)evt.Params["room"];
+
+        // If we joined a Game Room, then we either created it (and auto joined) or manually selected a game to join
+        if (room.IsGame)
+        {
+            // Remove SFS2X listeners
+            reset();
+
+            // Load game scene
+            SceneManager.LoadScene("game");
+        }
+        else
+        {
+            Debug.Log("\nYou joined a Room: " + room.Name);
+
+        }
+
     }
 
     private void OnRoomJoinError(BaseEvent evt)
@@ -234,19 +257,13 @@ public class AuthController : MonoBehaviour
 
     }
 
-    private void OnUserEnterRoom(BaseEvent evt)
-    {
-        Debug.Log("OnUserEnterRoom");
-    }
-
-    private void OnUserExitRoom(BaseEvent evt)
-    {
-        Debug.Log("OnUserExitRoom");
-    }
+   
 
     private void OnRoomAdd(BaseEvent evt)
     {
         Debug.Log("OnRoomAdd");
+        Room room = (Room)evt.Params["room"];
+        Debug.Log(room.Name+" ; "+sfs.RoomList.Count);
     }
 
 
@@ -279,5 +296,42 @@ public class AuthController : MonoBehaviour
         enableLoginUI(true);
     }
 
-  
+
+    public void FindGameClick()
+    {
+
+        // Configure Game Room
+        RoomSettings settings = new RoomSettings(sfs.MySelf.Name + "'s game");
+        settings.GroupId = "games";
+        settings.IsGame = true;
+        settings.MaxUsers = 2;
+        settings.MaxSpectators = 0;
+        //settings.Extension = new RoomExtension(EXTENSION_ID, EXTENSION_CLASS);
+
+        // Request Game Room creation to server
+        sfs.Send(new CreateRoomRequest(settings, true, sfs.LastJoinedRoom));
+
+        //!!!!!
+        //reset();
+        //SceneManager.LoadScene("game");
+    }
+
+    private void OnUserEnterRoom(BaseEvent evt)
+    {
+        User user = (User)evt.Params["user"];
+
+        Debug.Log("User " + user.Name + " entered the room");
+    }
+
+    private void OnUserExitRoom(BaseEvent evt)
+    {
+        User user = (User)evt.Params["user"];
+
+        if (user != sfs.MySelf)
+        {
+            Debug.Log("User " + user.Name + " left the room");
+        }
+    }
+
+
 }
