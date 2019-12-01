@@ -19,6 +19,7 @@ public class GameController : MonoBehaviour
     private SmartFox sfs;
     public TMP_Text stateText;
     private DominionGame dominionGame;
+    public List<GameObject> cards;
 
     private enum GameState
     {
@@ -143,7 +144,7 @@ public class GameController : MonoBehaviour
         setCurrentGameState(GameState.RUNNING);
 
         dominionGame.StartGame(
-                 dataObject.GetSFSArray("cards")
+                 dataObject.GetSFSArray("cards"), cards
                   //dataObject.GetInt("t"),
                   //dataObject.GetInt("p1i"),
                   //dataObject.GetInt("p2i"),

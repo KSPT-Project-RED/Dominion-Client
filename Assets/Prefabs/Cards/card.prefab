@@ -239,10 +239,8 @@ GameObject:
   - component: {fileID: 1528804254978025090}
   - component: {fileID: 1528804254978025092}
   - component: {fileID: 1528804254978025091}
-  - component: {fileID: 4903633559343186440}
   - component: {fileID: 5189610957330225595}
   - component: {fileID: 3629722958108073328}
-  - component: {fileID: 6089604017475379094}
   m_Layer: 5
   m_Name: card
   m_TagString: Untagged
@@ -312,22 +310,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &4903633559343186440
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1528804254978025089}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 10a1e5f8a64594d7fabdfb2f731f3fdb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  defaultParent: {fileID: 0}
-  defaultTempCardParent: {fileID: 0}
-  LogicManager: {fileID: 0}
-  IsDraggable: 0
 --- !u!225 &5189610957330225595
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -354,23 +336,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   logo: {fileID: 1528804254525411852}
   name: {fileID: 1528804254110188897}
-  attack: {fileID: 7837773121342330469}
-  defense: {fileID: 4111589775044006472}
+  cost: {fileID: 7837773121342330469}
+  number: {fileID: 4111589775044006472}
   description: {fileID: 1528804255089681722}
   HideObj: {fileID: 4581286922433922673}
   HighlitedObject: {fileID: 5770018308425532053}
---- !u!114 &6089604017475379094
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1528804254978025089}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ee833f18971b54154afe4bfef0a28fd4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  isPlayer: 0
 --- !u!1 &1528804255089681720
 GameObject:
   m_ObjectHideFlags: 0
@@ -611,7 +582,7 @@ GameObject:
   - component: {fileID: 6118957440071073494}
   - component: {fileID: 4111589775044006472}
   m_Layer: 5
-  m_Name: Defense
+  m_Name: number
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -839,7 +810,7 @@ GameObject:
   - component: {fileID: 4644108307664732302}
   - component: {fileID: 7837773121342330469}
   m_Layer: 5
-  m_Name: Attack
+  m_Name: cost
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

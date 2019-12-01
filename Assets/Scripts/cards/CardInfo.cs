@@ -9,7 +9,7 @@ public class CardInfo : MonoBehaviour
 
     public CardStruct card;
     public Image logo;
-    public TextMeshProUGUI name, attack, defense;
+    public TextMeshProUGUI name, cost, number;
     public TextMeshProUGUI description;
     public GameObject HideObj, HighlitedObject;
     public bool isPlayer;
@@ -22,23 +22,23 @@ public class CardInfo : MonoBehaviour
   
     }
 
-    public void ShowCardInfo(CardStruct card, bool isPlayer)
+    public void ShowCardInfo(CardStruct card)
     {
-        this.isPlayer = isPlayer;
+       // this.isPlayer = isPlayer;
         HideObj.SetActive(false);
         this.card = card;
         this.logo.sprite = card.logo;
         logo.preserveAspect = true;
         this.name.text = card.name;
         this.description.text = card.description;
-        this.attack.text = card.attack.ToString();
-        this.defense.text = card.defense.ToString();
+        this.cost.text = card.cost.ToString();
+        this.number.text = card.number.ToString();
     }
 
     public void RefreshData()
     {
-        this.attack.text = card.attack.ToString();
-        this.defense.text = card.defense.ToString();
+        this.cost.text = card.cost.ToString();
+        this.number.text = card.number.ToString();
     }
 
     public void HighlightCard()

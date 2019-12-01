@@ -1,124 +1,124 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.EventSystems;
+﻿//using System.Collections;
+//using System.Collections.Generic;
+//using UnityEngine;
+//using UnityEngine.EventSystems;
 
-public class CardMovement : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
-{
-    private Camera mainCamera;
-    private Vector3 offset;//значение отступа от центра карты
-    public Transform defaultParent, defaultTempCardParent;
-    GameObject tempCardGO; //временная карта, которая будет представлять призрак передвигающейся карты
-    public LogicManager  LogicManager;
-    public bool IsDraggable;
+//public class CardMovement : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
+//{
+//    private Camera mainCamera;
+//    private Vector3 offset;//значение отступа от центра карты
+//    public Transform defaultParent, defaultTempCardParent;
+//    GameObject tempCardGO; //временная карта, которая будет представлять призрак передвигающейся карты
+//    public LogicManager  LogicManager;
+//    public bool IsDraggable;
 
-    void Awake()
-    {
-        mainCamera = Camera.allCameras[0];//на сцене всего одна камера
-        tempCardGO = GameObject.Find("TempCardGO");//карта-призрак находится вне canvas
-        LogicManager = FindObjectOfType<LogicManager>();
-    }
+//    void Awake()
+//    {
+//        mainCamera = Camera.allCameras[0];//на сцене всего одна камера
+//        tempCardGO = GameObject.Find("TempCardGO");//карта-призрак находится вне canvas
+//        LogicManager = FindObjectOfType<LogicManager>();
+//    }
       
-    public void OnBeginDrag(PointerEventData eventData)
-    {
-        /*
-         * Для получение отступа вычитаем из координат карты координаты мыши
-         * в игровой области.
-         */
-        offset = transform.position - mainCamera.ScreenToWorldPoint(eventData.position);
+//    public void OnBeginDrag(PointerEventData eventData)
+//    {
+//        /*
+//         * Для получение отступа вычитаем из координат карты координаты мыши
+//         * в игровой области.
+//         */
+//        offset = transform.position - mainCamera.ScreenToWorldPoint(eventData.position);
 
-        defaultParent = defaultTempCardParent =  transform.parent;
+//        defaultParent = defaultTempCardParent =  transform.parent;
 
-        IsDraggable = (defaultParent.GetComponent<DropPlace>().Type == FieldType.SELF_HAND ||
-            defaultParent.GetComponent<DropPlace>().Type == FieldType.SELF_FIELD) && LogicManager.isActiveAndEnabled;
+//        IsDraggable = (defaultParent.GetComponent<DropPlace>().Type == FieldType.SELF_HAND ||
+//            defaultParent.GetComponent<DropPlace>().Type == FieldType.SELF_FIELD) && LogicManager.isActiveAndEnabled;
 
-        if (!IsDraggable)
-            return;
+//        if (!IsDraggable)
+//            return;
 
-        tempCardGO.transform.SetParent(defaultParent);
+//        tempCardGO.transform.SetParent(defaultParent);
 
-        /*
-         * Индекс дочернего объекта. Т.к. родитель - область, где находятся карты,
-         * то нумерация (индекс карты - можно увидеть на сцене) идет в нашем случае
-         * от 0 до N слева направо для карт, находящихся в родительской области
-         */
-        tempCardGO.transform.SetSiblingIndex(transform.GetSiblingIndex());
+//        /*
+//         * Индекс дочернего объекта. Т.к. родитель - область, где находятся карты,
+//         * то нумерация (индекс карты - можно увидеть на сцене) идет в нашем случае
+//         * от 0 до N слева направо для карт, находящихся в родительской области
+//         */
+//        tempCardGO.transform.SetSiblingIndex(transform.GetSiblingIndex());
 
-        /*
-         * Вначале перетягивания поднимаем вверх по иерархии игровую карту, присвоив
-         * родителя ее родителя
-         */
-        transform.SetParent(defaultParent.parent);
+//        /*
+//         * Вначале перетягивания поднимаем вверх по иерархии игровую карту, присвоив
+//         * родителя ее родителя
+//         */
+//        transform.SetParent(defaultParent.parent);
 
-        //!!!
-        GetComponent<CanvasGroup>().blocksRaycasts = false; 
-    }
+//        //!!!
+//        GetComponent<CanvasGroup>().blocksRaycasts = false; 
+//    }
 
-    public void OnDrag(PointerEventData eventData)
-    {
+//    public void OnDrag(PointerEventData eventData)
+//    {
 
-        if (!IsDraggable)
-            return;
+//        if (!IsDraggable)
+//            return;
 
-        /*
-         * Текущие координаты мыши, получаемые при перемещении курсором мыши карты.
-         * Координаты мыши молучаем в плоскости экрана, но нам нужно
-         * получить координаты в игровом мире.
-         */
-        Vector3 newPos = mainCamera.ScreenToWorldPoint(eventData.position);
+//        /*
+//         * Текущие координаты мыши, получаемые при перемещении курсором мыши карты.
+//         * Координаты мыши молучаем в плоскости экрана, но нам нужно
+//         * получить координаты в игровом мире.
+//         */
+//        Vector3 newPos = mainCamera.ScreenToWorldPoint(eventData.position);
 
-        transform.position = newPos + offset ;
+//        transform.position = newPos + offset ;
 
-        if(tempCardGO.transform.parent != defaultTempCardParent)
-        {
-            tempCardGO.transform.SetParent(defaultTempCardParent);
-        }
+//        if(tempCardGO.transform.parent != defaultTempCardParent)
+//        {
+//            tempCardGO.transform.SetParent(defaultTempCardParent);
+//        }
 
-        if(defaultParent.GetComponent<DropPlace>().Type != FieldType.SELF_FIELD)
-        CheckPosition();
-    }
+//        if(defaultParent.GetComponent<DropPlace>().Type != FieldType.SELF_FIELD)
+//        CheckPosition();
+//    }
       
-    public void OnEndDrag(PointerEventData eventData)
-    {
+//    public void OnEndDrag(PointerEventData eventData)
+//    {
 
-        if (!IsDraggable)
-            return;
+//        if (!IsDraggable)
+//            return;
 
-        // возврат карты по иерархии, вернув ей своего настоящего родителя
-        transform.SetParent(defaultParent);
-        GetComponent<CanvasGroup>().blocksRaycasts = true;
+//        // возврат карты по иерархии, вернув ей своего настоящего родителя
+//        transform.SetParent(defaultParent);
+//        GetComponent<CanvasGroup>().blocksRaycasts = true;
 
-        transform.SetSiblingIndex(tempCardGO.transform.GetSiblingIndex());
+//        transform.SetSiblingIndex(tempCardGO.transform.GetSiblingIndex());
 
 
-        //чтобы спрятать карту-призрак нужно ее спрятать после оканчания передвижения
-        tempCardGO.transform.SetParent(GameObject.Find("Canvas").transform);
-        tempCardGO.transform.localPosition =   new Vector3(2500, 0);
-    }
+//        //чтобы спрятать карту-призрак нужно ее спрятать после оканчания передвижения
+//        tempCardGO.transform.SetParent(GameObject.Find("Canvas").transform);
+//        tempCardGO.transform.localPosition =   new Vector3(2500, 0);
+//    }
 
-    /*
-     * Проходим по каждому дочернему объекту сетки карт слева направо и 
-     * сравниваем позицию по x.
-     */
-    void CheckPosition()
-    {
-        int newIndex = defaultTempCardParent.childCount;
+//    /*
+//     * Проходим по каждому дочернему объекту сетки карт слева направо и 
+//     * сравниваем позицию по x.
+//     */
+//    void CheckPosition()
+//    {
+//        int newIndex = defaultTempCardParent.childCount;
 
-        for(int i=0; i< defaultTempCardParent.childCount; i++)
-        {
-            if(transform.position.x < defaultTempCardParent.GetChild(i).transform.position.x)
-            {
-                newIndex = i;
+//        for(int i=0; i< defaultTempCardParent.childCount; i++)
+//        {
+//            if(transform.position.x < defaultTempCardParent.GetChild(i).transform.position.x)
+//            {
+//                newIndex = i;
 
-                if(tempCardGO.transform.GetSiblingIndex() < newIndex)
-                {
-                    newIndex--;
-                }
+//                if(tempCardGO.transform.GetSiblingIndex() < newIndex)
+//                {
+//                    newIndex--;
+//                }
 
-                break;
-            }
-        }
+//                break;
+//            }
+//        }
 
-        tempCardGO.transform.SetSiblingIndex(newIndex); 
-    }
-}
+//        tempCardGO.transform.SetSiblingIndex(newIndex); 
+//    }
+//}
