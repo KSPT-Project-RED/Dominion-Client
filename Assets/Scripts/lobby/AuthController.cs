@@ -35,6 +35,9 @@ public class AuthController : MonoBehaviour
     public TMP_Text authLoginLabel;
     public GameObject AuthLogin;
 
+    public Transform gameListContent;
+    public GameObject gameListItem;
+
     private SmartFox sfs;
     private bool firstJoin = true;
     private string CMD_SIGNUP = "$SignUp.Submit";
@@ -229,6 +232,8 @@ public class AuthController : MonoBehaviour
             Debug.Log("Hello " + user.Name);
             AuthLogin.SetActive(false);
 
+            populateGamesList();
+
             //sfs.Send(new JoinRoomRequest("Test1"));
         }
 
@@ -244,6 +249,8 @@ public class AuthController : MonoBehaviour
 
         Debug.Log("Login failed: " + (string)evt.Params["errorMessage"]);
     }
+
+
 
     private void OnRoomJoin(BaseEvent evt)
     {
@@ -323,7 +330,8 @@ public class AuthController : MonoBehaviour
     {
 
         // Configure Game Room
-        RoomSettings settings = new RoomSettings(sfs.MySelf.Name + "'s game");
+        //RoomSettings settings = new RoomSettings(sfs.MySelf.Name + "'s game");
+        RoomSettings settings = new RoomSettings("test1");
         settings.GroupId = "games";
         settings.IsGame = true;
         settings.MaxUsers = 2;
@@ -336,6 +344,12 @@ public class AuthController : MonoBehaviour
         //!!!!!
         //reset();
         //SceneManager.LoadScene("game");
+    }
+
+    public void OnGameItemClick(int roomId)
+    {
+        // Join the Room
+        sfs.Send(new Sfs2X.Requests.JoinRoomRequest(roomId));
     }
 
     private void OnUserEnterRoom(BaseEvent evt)
@@ -355,5 +369,41 @@ public class AuthController : MonoBehaviour
         }
     }
 
+    private void populateGamesList()
+    {
+        // For the gamelist we use a scrollable area containing a separate prefab button for each Game Room
+        // Buttons are clickable to join the games
+        List<Room> rooms = sfs.RoomManager.GetRoomList();
+
+        foreach (Room room in rooms)
+        {
+            // Show only game rooms
+            // Also password protected Rooms are skipped, to make this example simpler
+            // (protection would require an interface element to input the password)
+            if (!room.IsGame || room.IsHidden || room.IsPasswordProtected)
+            {
+                continue;
+            }
+
+            int roomId = room.Id;
+
+            GameObject newListItem = Instantiate(gameListItem) as GameObject;
+            GameListItem roomItem = newListItem.GetComponent<GameListItem>();
+            roomItem.nameLabel.text = room.Name;
+            roomItem.roomId = roomId;
+
+            roomItem.button.onClick.AddListener(() => OnGameItemClick(roomId));
+
+            newListItem.transform.SetParent(gameListContent, false);
+        }
+    }
+
+    private void clearGamesList()
+    {
+        foreach (Transform child in gameListContent.transform)
+        {
+            GameObject.Destroy(child.gameObject);
+        }
+    }
 
 }
