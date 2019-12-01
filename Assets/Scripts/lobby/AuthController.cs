@@ -42,8 +42,8 @@ public class AuthController : MonoBehaviour
     private bool firstJoin = true;
     private string CMD_SIGNUP = "$SignUp.Submit";
 
-    private const string EXTENSION_ID = "Dominion";
-    //private const string EXTENSION_CLASS = "sfs2x.extensions.games.tris.TrisExtension";
+    private const string EXTENSION_ID = "DominionExtension";
+    private const string EXTENSION_CLASS = "com.trpo.dominion.DominionExtension";
 
     //private void Awake()
     //{
@@ -363,7 +363,8 @@ public class AuthController : MonoBehaviour
         settings.IsGame = true;
         settings.MaxUsers = 2;
         settings.MaxSpectators = 0;
-        //settings.Extension = new RoomExtension(EXTENSION_ID, EXTENSION_CLASS);
+        settings.Extension = new RoomExtension(EXTENSION_ID, EXTENSION_CLASS);
+
 
         // Request Game Room creation to server
         sfs.Send(new CreateRoomRequest(settings, true, sfs.LastJoinedRoom));
