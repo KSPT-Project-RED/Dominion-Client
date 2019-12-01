@@ -143,6 +143,7 @@ public class GameController : MonoBehaviour
         setCurrentGameState(GameState.RUNNING);
 
         dominionGame.StartGame(
+                 dataObject.GetSFSArray("cards")
                   //dataObject.GetInt("t"),
                   //dataObject.GetInt("p1i"),
                   //dataObject.GetInt("p2i"),
