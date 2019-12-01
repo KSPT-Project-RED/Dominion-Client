@@ -45,6 +45,14 @@ public class AuthController : MonoBehaviour
     private const string EXTENSION_ID = "Dominion";
     //private const string EXTENSION_CLASS = "sfs2x.extensions.games.tris.TrisExtension";
 
+    //private void Awake()
+    //{
+    //    if (SmartFoxConnection.IsInitialized)
+    //    {
+    //        sfs = SmartFoxConnection.Connection;
+    //    }
+    //}
+
     void Start()
     {
         loginInput.text = "";
@@ -150,6 +158,7 @@ public class AuthController : MonoBehaviour
         if ((bool)evt.Params["success"])
         {
             Debug.Log("On connection success");
+            SmartFoxConnection.Connection = sfs;
 
             if (firstJoin) {//сначала авторизация в качестве гостя
                 Debug.Log("On connection success1");
@@ -261,6 +270,7 @@ public class AuthController : MonoBehaviour
         // If we joined a Game Room, then we either created it (and auto joined) or manually selected a game to join
         if (room.IsGame)
         {
+            Debug.Log("You joined a Room: " + room.Name);
             // Remove SFS2X listeners
             reset();
 
@@ -286,7 +296,24 @@ public class AuthController : MonoBehaviour
 
     }
 
-   
+    private void OnUserEnterRoom(BaseEvent evt)
+    {
+        User user = (User)evt.Params["user"];
+
+        // Show system message
+        Debug.Log("User " + user.Name + " entered the room");
+    }
+
+    private void OnUserExitRoom(BaseEvent evt)
+    {
+        User user = (User)evt.Params["user"];
+
+        if (user != sfs.MySelf)
+        {
+            // Show system message
+            Debug.Log("User " + user.Name + " left the room");
+        }
+    }
 
     private void OnRoomAdd(BaseEvent evt)
     {
@@ -348,25 +375,9 @@ public class AuthController : MonoBehaviour
 
     public void OnGameItemClick(int roomId)
     {
+        Debug.Log("Room id: " + roomId);
         // Join the Room
         sfs.Send(new Sfs2X.Requests.JoinRoomRequest(roomId));
-    }
-
-    private void OnUserEnterRoom(BaseEvent evt)
-    {
-        User user = (User)evt.Params["user"];
-
-        Debug.Log("User " + user.Name + " entered the room");
-    }
-
-    private void OnUserExitRoom(BaseEvent evt)
-    {
-        User user = (User)evt.Params["user"];
-
-        if (user != sfs.MySelf)
-        {
-            Debug.Log("User " + user.Name + " left the room");
-        }
     }
 
     private void populateGamesList()
@@ -390,6 +401,7 @@ public class AuthController : MonoBehaviour
             GameObject newListItem = Instantiate(gameListItem) as GameObject;
             GameListItem roomItem = newListItem.GetComponent<GameListItem>();
             roomItem.nameLabel.text = room.Name;
+
             roomItem.roomId = roomId;
 
             roomItem.button.onClick.AddListener(() => OnGameItemClick(roomId));
