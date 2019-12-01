@@ -56,6 +56,28 @@ public class AuthController : MonoBehaviour
             sfs.ProcessEvents();
     }
 
+    //For admin test
+    public void auth1()
+    {
+        OnSigninButtonClick();
+        OnSubmitButtonClick();
+
+        //должны быть в бд
+        loginInput.text = "test1111";
+        passwordInput.text = "test1111test1111";
+    }
+
+    //For admin test
+    public void auth2()
+    {
+        OnSigninButtonClick();
+        OnSubmitButtonClick();
+
+        //должны быть в бд
+        loginInput.text = "test444";
+        passwordInput.text = "test444test444";
+    }
+
     public void OnSigninButtonClick()
     {
         emailInput.gameObject.SetActive(false);
