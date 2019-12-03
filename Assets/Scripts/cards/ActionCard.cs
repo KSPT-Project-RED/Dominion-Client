@@ -2,32 +2,16 @@
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
-public class ActionCard : MonoBehaviour
+public class ActionCard : MonoBehaviour, IPointerClickHandler
 {
-    public DominionGame dominionGame;
     public GameController gameController;
-    //public TextMeshProUGUI numberLabel;
-    //public int number = 10;
 
-    void Update()
+    public void OnPointerClick(PointerEventData eventData)
     {
-        if (Input.GetMouseButtonDown(0))
-        {
-            Debug.Log("Mouse Clicked");
-            gameController.checkBuy(this.GetComponent<CardInfo>().getName());
-
-
-            //number--;
-            //if (number == 0)
-            //{
-            //    this.gameObject.SetActive(false);
-            //}
-            //numberLabel.text = ""+number;
-            
-        }
+        Debug.Log("Mouse Clicked");
+        gameController.checkBuy(this.GetComponent<CardInfo>().getName());
     }
-
-
 
 }
