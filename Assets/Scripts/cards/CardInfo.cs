@@ -20,6 +20,11 @@ public class CardInfo : MonoBehaviour
         return name.text;
     }
 
+    public string getType()
+    {
+        return card.type;
+    }
+
     public void HideInfoCard(CardStruct card)
     {
         this.card = card;

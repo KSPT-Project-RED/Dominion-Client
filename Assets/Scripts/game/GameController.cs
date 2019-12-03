@@ -158,6 +158,14 @@ public class GameController : MonoBehaviour
         Debug.Log("CHECK BUY");
     }
 
+    public void doAction(String nameCard)
+    {
+        ISFSObject msg = new SFSObject();
+        msg.PutUtfString("NameCard", nameCard);
+        sfs.Send(new ExtensionRequest("action", msg, sfs.LastJoinedRoom));
+        Debug.Log("DO ACTION");
+    }
+
     public void UpdateNumberCard(SFSObject dataObject)
     {
         Debug.Log("Received checking cost card!");

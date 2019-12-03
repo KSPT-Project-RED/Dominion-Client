@@ -29,8 +29,10 @@ public class CardMovement : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
 
         defaultParent = defaultTempCardParent = transform.parent;
 
-        IsDraggable = (defaultParent.GetComponent<DropPlace>().Type == FieldType.SELF_HAND ||
-            defaultParent.GetComponent<DropPlace>().Type == FieldType.SELF_FIELD);// && LogicManager.isActiveAndEnabled;
+        Debug.Log(this.GetComponent<CardInfo>().getType());
+
+        IsDraggable = ((defaultParent.GetComponent<DropPlace>().Type == FieldType.SELF_HAND ||
+            defaultParent.GetComponent<DropPlace>().Type == FieldType.SELF_FIELD) && this.GetComponent<CardInfo>().getType().Equals("действие"));// && LogicManager.isActiveAndEnabled;
 
         if (!IsDraggable)
             return;
@@ -86,6 +88,7 @@ public class CardMovement : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
 
         // возврат карты по иерархии, вернув ей своего настоящего родителя
         transform.SetParent(defaultParent);
+
         GetComponent<CanvasGroup>().blocksRaycasts = true;
 
         transform.SetSiblingIndex(tempCardGO.transform.GetSiblingIndex());
@@ -94,6 +97,11 @@ public class CardMovement : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
         //чтобы спрятать карту-призрак нужно ее спрятать после оканчания передвижения
         tempCardGO.transform.SetParent(GameObject.Find("Canvas").transform);
         tempCardGO.transform.localPosition = new Vector3(2500, 0);
+
+        //переместили карту действия и отправили всем инфу об этом
+        if(defaultParent.GetComponent<DropPlace>().Type == FieldType.SELF_FIELD){
+            mainCamera.GetComponent<GameController>().doAction(this.GetComponent<CardInfo>().getName());
+        }
     }
 
     /*

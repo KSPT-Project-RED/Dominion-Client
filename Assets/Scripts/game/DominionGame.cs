@@ -10,11 +10,13 @@ public class DominionGame : MonoBehaviour
     public List<GameObject> prefabCards;
     public GameObject CardPref;
     public Transform PlayerHand;
+    public Transform PlayerField;
     public List<CardInfo> PlayerHandCards = new List<CardInfo>();
     public TextMeshProUGUI coins, money, actions, buy;
     public TextMeshProUGUI dropNumber, deckNumber;
 
     private List<GameObject> tmpInst = new List<GameObject>();
+    private List<GameObject> fieldTMPInst = new List<GameObject>();
 
 
     public void UpdateCurrentState(SFSObject dataObject)
@@ -30,6 +32,7 @@ public class DominionGame : MonoBehaviour
         ISFSArray hand = dataObject.GetSFSArray("hand");
         ISFSArray hideCards = dataObject.GetSFSArray("hide");
         ISFSArray dropCards = dataObject.GetSFSArray("drop");
+        ISFSArray fieldCards = dataObject.GetSFSArray("field");
 
         dropNumber.text = dropCards.Size().ToString();
         deckNumber.text = hideCards.Size().ToString();
@@ -40,9 +43,21 @@ public class DominionGame : MonoBehaviour
         }
         tmpInst.Clear();
 
+
+        for (int i = 0; i < fieldTMPInst.Count; i++)
+        {
+            Destroy(fieldTMPInst[i]);
+        }
+        fieldTMPInst.Clear();
+
         for (int i = 0; i < hand.Size(); i++)
         {
             GiveCardToHand(hand.GetSFSObject(i));
+        }
+
+        for (int i = 0; i < fieldCards.Size(); i++)
+        {
+            addCardToField(fieldCards.GetSFSObject(i));
         }
     }
 
@@ -78,6 +93,21 @@ public class DominionGame : MonoBehaviour
         }
     }
 
+    private void addCardToField(ISFSObject card)
+    {
+        GameObject cardGo = Instantiate(CardPref, PlayerField, false);
+        fieldTMPInst.Add(cardGo);
+
+        CardStruct tmpCard = new CardStruct(card.GetText("Name"),
+                card.GetText("Description"),
+                "Sprites/Cards/" + card.GetText("ImageId"),
+                card.GetInt("Cost"),
+                10, card.GetText("Type"),
+                card.GetInt("Money"), card.GetInt("Action"), card.GetInt("Buy"));
+
+        cardGo.GetComponent<CardInfo>().ShowCardInfo(tmpCard);
+    }
+
     private void GiveCardToHand(ISFSObject card)
     {
        
@@ -93,18 +123,5 @@ public class DominionGame : MonoBehaviour
 
         cardGo.GetComponent<CardInfo>().ShowCardInfo(tmpCard);
 
-        //if (hand == EnemyHand)
-        //{
-        //    cardGo.GetComponent<CardInfo>().HideInfoCard(card);
-        //    EnemyHandCards.Add(cardGo.GetComponent<CardInfo>());
-        //}
-        //else
-        //{
-        //    //cardGo.GetComponent<CardInfo>().ShowCardInfo(card, true);
-        //    PlayerHandCards.Add(cardGo.GetComponent<CardInfo>());
-        //    cardGo.GetComponent<CardAttack>().enabled = false;
-        //}
-
-        //deck.RemoveAt(0);
     }
 }
