@@ -845,7 +845,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: DOMINION!!
+  m_text: DOMINION
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2100000, guid: e73a58f6e2794ae7b1b7e50b7fb811b0, type: 2}
@@ -873,7 +873,7 @@ MonoBehaviour:
   m_outlineColor:
     serializedVersion: 2
     rgba: 4278190080
-  m_fontSize: 118.85
+  m_fontSize: 125.5
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -914,7 +914,7 @@ MonoBehaviour:
   m_margin: {x: 0, y: 0, z: 0, w: 287.86978}
   m_textInfo:
     textComponent: {fileID: 230004235}
-    characterCount: 10
+    characterCount: 8
     spriteCount: 0
     spaceCount: 0
     wordCount: 1
@@ -3161,7 +3161,7 @@ PrefabInstance:
     - target: {fileID: 542797007675539344, guid: bc69d35456f14499fb015031f12fa28f,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -13
+      value: -12.9999695
       objectReference: {fileID: 0}
     - target: {fileID: 542797007675539344, guid: bc69d35456f14499fb015031f12fa28f,
         type: 3}

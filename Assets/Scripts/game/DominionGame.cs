@@ -14,14 +14,14 @@ public class DominionGame : MonoBehaviour
 
     public void InitPlayerCards(SFSObject dataObject)
     {
-        string[] hand = dataObject.GetUtfStringArray("hand");
-        string[] hideCards = dataObject.GetUtfStringArray("hide");
-        string[] dropCards = dataObject.GetUtfStringArray("drop");
+        ISFSArray hand = dataObject.GetSFSArray("hand");
+        ISFSArray hideCards = dataObject.GetSFSArray("hide");
+        ISFSArray dropCards = dataObject.GetSFSArray("drop");
      
-        for (int i = 0; i < hand.Length; i++)
+        for (int i = 0; i < hand.Size(); i++)
         {
             Debug.Log(CardPref == null);
-            Debug.Log(hand[i]);
+            //Debug.Log(hand[i]);
             GiveCardToHand();
         }
     }
