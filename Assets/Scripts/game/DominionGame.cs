@@ -22,6 +22,7 @@ public class DominionGame : MonoBehaviour
         money.text = "money: " + dataObject.GetInt("Money");
         actions.text = "actions: " + dataObject.GetInt("Action");
         buy.text = "buy: " + dataObject.GetInt("Buy");
+        coins.text = "coins: " + dataObject.GetInt("Coin");
     }
 
     public void InitPlayerCards(SFSObject dataObject)
