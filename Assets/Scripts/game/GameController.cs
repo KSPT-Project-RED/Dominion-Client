@@ -18,7 +18,7 @@ public class GameController : MonoBehaviour
 {
     private SmartFox sfs;
     public TMP_Text stateText;
-    private DominionGame dominionGame;
+    public DominionGame dominionGame;
     public List<GameObject> cards;
 
     private enum GameState
@@ -57,7 +57,7 @@ public class GameController : MonoBehaviour
 
 
         //подготавляваем новую игровую сессию
-        dominionGame = new DominionGame();
+        //dominionGame = new DominionGame();
         sfs.Send(new ExtensionRequest("ready", new SFSObject(), sfs.LastJoinedRoom));
     }
 
@@ -131,11 +131,21 @@ public class GameController : MonoBehaviour
                 SetStartGame(dataObject);
               
                 break;
+            case "cards":
+                SetPlayerCards(dataObject);
+
+                break;
 
             case "second":
    
                 break;
         }
+    }
+
+    public void SetPlayerCards(SFSObject dataObject)
+    {
+        Debug.Log("Received started cards!");
+        dominionGame.InitPlayerCards(dataObject);
     }
 
     public void SetStartGame(SFSObject dataObject)

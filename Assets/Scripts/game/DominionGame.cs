@@ -7,18 +7,25 @@ public class DominionGame : MonoBehaviour
 {
 
     public List<GameObject> prefabCards;
+    public GameObject CardPref;
+    public Transform PlayerHand;
+    public List<CardInfo> PlayerHandCards = new List<CardInfo>();
 
-    // Start is called before the first frame update
-    void Start()
+
+    public void InitPlayerCards(SFSObject dataObject)
     {
-        
+        string[] hand = dataObject.GetUtfStringArray("hand");
+        string[] hideCards = dataObject.GetUtfStringArray("hide");
+        string[] dropCards = dataObject.GetUtfStringArray("drop");
+     
+        for (int i = 0; i < hand.Length; i++)
+        {
+            Debug.Log(CardPref == null);
+            Debug.Log(hand[i]);
+            GiveCardToHand();
+        }
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 
     public void StartGame(ISFSArray cards, List<GameObject> prefabCards)
     {
@@ -34,8 +41,35 @@ public class DominionGame : MonoBehaviour
            
             prefabCards[i].GetComponent<CardInfo>().ShowCardInfo(card);
 
-            Debug.Log(cards.GetSFSObject(i).GetText("Name"));
-            Debug.Log(cards.GetSFSObject(i).GetText("Description"));
+            //Debug.Log(cards.GetSFSObject(i).GetText("Name"));
+            //Debug.Log(cards.GetSFSObject(i).GetText("Description"));
         }
+    }
+
+    void GiveCardToHand()
+    {
+        //if (deck.Count == 0)
+        //    return;
+
+        //CardStruct card = deck[0];
+
+        //!!!!
+        Debug.Log(CardPref);
+        GameObject cardGo = Instantiate(CardPref, PlayerHand, false);
+        //cardGo.GetComponent<CardInfo>().ShowCardInfo(card, true);
+
+        //if (hand == EnemyHand)
+        //{
+        //    cardGo.GetComponent<CardInfo>().HideInfoCard(card);
+        //    EnemyHandCards.Add(cardGo.GetComponent<CardInfo>());
+        //}
+        //else
+        //{
+        //    //cardGo.GetComponent<CardInfo>().ShowCardInfo(card, true);
+        //    PlayerHandCards.Add(cardGo.GetComponent<CardInfo>());
+        //    cardGo.GetComponent<CardAttack>().enabled = false;
+        //}
+
+        //deck.RemoveAt(0);
     }
 }
