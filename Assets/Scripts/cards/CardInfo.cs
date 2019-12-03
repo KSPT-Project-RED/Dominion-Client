@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -14,12 +15,31 @@ public class CardInfo : MonoBehaviour
     public GameObject HideObj, HighlitedObject;
     public bool isPlayer;
 
+    public string getName()
+    {
+        return name.text;
+    }
+
     public void HideInfoCard(CardStruct card)
     {
         this.card = card;
         HideObj.SetActive(true);
         isPlayer = false;
   
+    }
+
+    public void MinusNumber()
+    {
+        Debug.Log("MINUS");
+        if (Int32.Parse(number.text) - 1 == 0)
+        {
+            this.gameObject.SetActive(false);
+
+        }
+        else
+        {
+            this.number.text = "" + (Int32.Parse(number.text) - 1);
+        }
     }
 
     public void ShowCardInfo(CardStruct card)

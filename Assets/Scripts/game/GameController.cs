@@ -135,11 +135,34 @@ public class GameController : MonoBehaviour
                 SetPlayerCards(dataObject);
 
                 break;
+            case "state":
+                SetCurrentState(dataObject);
+
+                break;
+            case "buy":
+                UpdateNumberCard(dataObject);
+
+                break;
 
             case "second":
    
                 break;
         }
+    }
+
+    public void checkBuy(string name)
+    {
+        ISFSObject msg = new SFSObject();
+        msg.PutUtfString("Name", name);
+        sfs.Send(new ExtensionRequest("buy", msg, sfs.LastJoinedRoom));
+        Debug.Log("CHECK BUY");
+    }
+
+    public void UpdateNumberCard(SFSObject dataObject)
+    {
+        Debug.Log("Received checking cost card!");
+        dominionGame.buyCard(dataObject);
+
     }
 
     public void SetPlayerCards(SFSObject dataObject)
@@ -148,19 +171,19 @@ public class GameController : MonoBehaviour
         dominionGame.InitPlayerCards(dataObject);
     }
 
+    public void SetCurrentState(SFSObject dataObject)
+    {
+        Debug.Log("Received current state!");
+        dominionGame.UpdateCurrentState(dataObject);
+    }
+
     public void SetStartGame(SFSObject dataObject)
     {
         Debug.Log("Game started!");
         setCurrentGameState(GameState.RUNNING);
 
         dominionGame.StartGame(
-                 dataObject.GetSFSArray("cards"), cards
-                  //dataObject.GetInt("t"),
-                  //dataObject.GetInt("p1i"),
-                  //dataObject.GetInt("p2i"),
-                  //dataObject.GetUtfString("p1n"),
-                  //dataObject.GetUtfString("p2n")
-                  );
+                 dataObject.GetSFSArray("cards"), cards);
     }
 
     public void SetGameOver(string result)
