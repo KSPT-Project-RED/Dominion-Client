@@ -32,7 +32,12 @@ public class CardMovement : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
         Debug.Log(this.GetComponent<CardInfo>().getType());
 
         IsDraggable = ((defaultParent.GetComponent<DropPlace>().Type == FieldType.SELF_HAND ||
-            defaultParent.GetComponent<DropPlace>().Type == FieldType.SELF_FIELD) && this.GetComponent<CardInfo>().getType().Equals("действие"));// && LogicManager.isActiveAndEnabled;
+            defaultParent.GetComponent<DropPlace>().Type == FieldType.SELF_FIELD)
+            && (this.GetComponent<CardInfo>().getType().Equals("действие")
+            && mainCamera.GetComponent<GameController>().isMyAction() ||
+            (this.GetComponent<CardInfo>().getType().Equals("деньги")
+            && (mainCamera.GetComponent<GameController>().isMyBuy()||
+            mainCamera.GetComponent<GameController>().isMyAction()))));// && LogicManager.isActiveAndEnabled;
 
         if (!IsDraggable)
             return;

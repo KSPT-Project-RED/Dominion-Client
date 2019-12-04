@@ -20,17 +20,37 @@ public class GameController : MonoBehaviour
     public TMP_Text stateText;
     public DominionGame dominionGame;
     public List<GameObject> cards;
+    private GameState gameState = GameState.WAITING;
+    private string myTurn = "FIRST";//!!!!
+    private int myId;
 
     private enum GameState
     {
-        WAITING_FOR_PLAYERS = 0,
+        WAITING = 0,
         RUNNING,
-        YOU_WIN,
-        SECOND_WIN,
-        THIRD_WIN,
-        FOURTH_WIN,
+        FIRST_ACTION,
+        FIRST_BUY,
+        SECOND_ACTION,
+        SECOND_BUY,
+        END,
         CONNECTION_LOST
     };
+
+    public bool isMyStep()
+    {
+        return gameState.ToString().Contains(myTurn);
+    }
+
+    public bool isMyAction()
+    {
+        return gameState.ToString().Contains(myTurn) && gameState.ToString().Contains("ACTION");
+    }
+
+    public bool isMyBuy()
+    {
+        return gameState.ToString().Contains(myTurn) && gameState.ToString().Contains("BUY");
+    }
+
 
     //инициализируем sfs соединение с использованием статического класса
     void Awake()
@@ -47,13 +67,16 @@ public class GameController : MonoBehaviour
             return;
         }
 
+        myId = sfs.MySelf.PlayerId;
+
         sfs.AddEventListener(SFSEvent.CONNECTION_LOST, OnConnectionLost);
         sfs.AddEventListener(SFSEvent.USER_ENTER_ROOM, OnUserEnterRoom);
         sfs.AddEventListener(SFSEvent.USER_EXIT_ROOM, OnUserExitRoom);
         sfs.AddEventListener(SFSEvent.EXTENSION_RESPONSE, OnExtensionResponse);
 
         //устанавливаем текущее состояние: ожидание других игроков
-        setCurrentGameState(GameState.WAITING_FOR_PLAYERS);
+        gameState = GameState.WAITING;
+        stateText.text = "Waiting";
 
 
         //подготавляваем новую игровую сессию
@@ -82,40 +105,7 @@ public class GameController : MonoBehaviour
         SceneManager.LoadScene("Lobby");
     }
 
-    
-
-
-    private void setCurrentGameState(GameState state)
-    {
-        if (state == GameState.WAITING_FOR_PLAYERS)
-        {
-            stateText.text = "Waiting for your opponent";
-        }
-        else if (state == GameState.RUNNING)
-        {
-            stateText.text = "Running";
-            // Nothing to do; the state text is updated by the DominionGame instance
-        }
-        else if (state == GameState.CONNECTION_LOST)
-        {
-            stateText.text = "Opponent disconnected; waiting for new player";
-        }
-        else
-        {
-            stateText.text = "GAME OVER";
-
-            if (state == GameState.YOU_WIN)
-            {
-                stateText.text += "\nYou've lost!";
-            }
-            else if (state == GameState.SECOND_WIN)
-            {
-                stateText.text += "\nSecond win!";
-            }
-           
-        }
-    }
-
+   
 
     /**
 	 * Handle responses from server side Extension.
@@ -129,19 +119,18 @@ public class GameController : MonoBehaviour
         {
             case "start":
                 SetStartGame(dataObject);
-              
                 break;
             case "cards":
                 SetPlayerCards(dataObject);
-
                 break;
             case "state":
                 SetCurrentState(dataObject);
-
                 break;
             case "buy":
                 UpdateNumberCard(dataObject);
-
+                break;
+            case "step":
+                UpdateStep(dataObject);
                 break;
 
             case "second":
@@ -150,8 +139,26 @@ public class GameController : MonoBehaviour
         }
     }
 
+    public void UpdateStep(SFSObject dataObject)
+    {
+        Debug.Log("Update step: " + dataObject.GetUtfString("Step"));
+        Enum.TryParse(dataObject.GetUtfString("Step"), out GameState state);
+        gameState = state;
+        stateText.text = gameState.ToString();
+    }
+
+    public void endTurn()
+    {
+        if (!isMyStep()) return;
+   
+        sfs.Send(new ExtensionRequest("endTurn", new SFSObject(), sfs.LastJoinedRoom));
+        Debug.Log("END TURN");
+    }
+
     public void checkBuy(string name)
     {
+        if (!isMyStep()) return;
+
         ISFSObject msg = new SFSObject();
         msg.PutUtfString("Name", name);
         sfs.Send(new ExtensionRequest("buy", msg, sfs.LastJoinedRoom));
@@ -160,9 +167,12 @@ public class GameController : MonoBehaviour
 
     public void doAction(String nameCard)
     {
+        if (!isMyStep()) return;
+
         ISFSObject msg = new SFSObject();
         msg.PutUtfString("NameCard", nameCard);
         sfs.Send(new ExtensionRequest("action", msg, sfs.LastJoinedRoom));
+
         Debug.Log("DO ACTION");
     }
 
@@ -188,7 +198,19 @@ public class GameController : MonoBehaviour
     public void SetStartGame(SFSObject dataObject)
     {
         Debug.Log("Game started!");
-        setCurrentGameState(GameState.RUNNING);
+        if(dataObject.GetInt("t") == myId)
+        {
+            myTurn = "FIRST";
+        }
+        else
+        {
+            myTurn = "SECOND";
+        }
+        Debug.Log(myTurn);
+
+        gameState = GameState.FIRST_BUY;
+        stateText.text = gameState.ToString();
+
 
         dominionGame.StartGame(
                  dataObject.GetSFSArray("cards"), cards);
