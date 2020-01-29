@@ -15,7 +15,7 @@ public class DominionGame : MonoBehaviour
     public TextMeshProUGUI coins, money, actions, buy;
     public TextMeshProUGUI dropNumber, deckNumber;
 
-    private List<GameObject> tmpInst = new List<GameObject>();
+    public List<GameObject> tmpInst = new List<GameObject>();
     private List<GameObject> fieldTMPInst = new List<GameObject>();
 
 

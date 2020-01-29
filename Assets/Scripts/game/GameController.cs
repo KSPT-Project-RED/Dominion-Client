@@ -21,34 +21,38 @@ public class GameController : MonoBehaviour
     public DominionGame dominionGame;
     public List<GameObject> cards;
     private GameState gameState = GameState.WAITING;
-    private string myTurn = "FIRST";//!!!!
+    private int myTurn = 0;//!!!!
     private int myId;
+    private int currentTurn = 0;
+    public int numOfDrop = 0;
+    public bool isDropping = false;
+    public GameObject dropping;
+    public GameObject endDropBtn;
+    public String dropType = "";
 
     private enum GameState
     {
         WAITING = 0,
         RUNNING,
-        FIRST_ACTION,
-        FIRST_BUY,
-        SECOND_ACTION,
-        SECOND_BUY,
+        ACTION,
+        BUY,
         END,
         CONNECTION_LOST
     };
 
     public bool isMyStep()
     {
-        return gameState.ToString().Contains(myTurn);
+        return currentTurn == myTurn;
     }
 
     public bool isMyAction()
     {
-        return gameState.ToString().Contains(myTurn) && gameState.ToString().Contains("ACTION");
+        return currentTurn == myTurn && gameState.ToString().Contains("ACTION") && !isDropping;
     }
 
     public bool isMyBuy()
     {
-        return gameState.ToString().Contains(myTurn) && gameState.ToString().Contains("BUY");
+        return currentTurn == myTurn && gameState.ToString().Contains("BUY") && !isDropping;
     }
 
 
@@ -88,6 +92,42 @@ public class GameController : MonoBehaviour
     {
         if (sfs != null)
             sfs.ProcessEvents();
+    }
+
+    public void DropSomeCards(int num)
+    {
+        DropSomeCards(num, "");
+    }
+
+    public void DropSomeCards(int num, String type)
+    {
+        isDropping = true;
+        numOfDrop = num;
+        dropType = type;
+        dropping.gameObject.active = true;
+
+        stateText.text = "Dropping " + numOfDrop + " cards \n &" + gameState.ToString();
+    }
+
+    public void DropCard(String nameDropCard)
+    {
+        ISFSObject msg = new SFSObject();
+        msg.PutUtfString("DropCard", nameDropCard);
+        sfs.Send(new ExtensionRequest("DropCard", msg, sfs.LastJoinedRoom));
+        numOfDrop--;
+
+        if(numOfDrop == 0)
+        {
+            isDropping = false;
+            stateText.text = gameState.ToString();
+            dropping.gameObject.active = false;
+            dropType = "";
+        }
+        else
+        {
+            stateText.text = "Dropping " + numOfDrop + " cards \n &" + gameState.ToString();
+        }
+        Debug.Log("Drop Card: " + nameDropCard);
     }
 
     public void OnLeaveGameButtonClick()
@@ -132,6 +172,9 @@ public class GameController : MonoBehaviour
             case "step":
                 UpdateStep(dataObject);
                 break;
+            case "command":
+                DoCommand(dataObject);
+                break;
 
             case "second":
    
@@ -139,12 +182,74 @@ public class GameController : MonoBehaviour
         }
     }
 
+    public void DoCommand(SFSObject dataObject)
+    {
+        Debug.Log("GETTING COMMAND ");
+        Debug.Log("GETTING COMMAND " + dataObject.GetUtfString("command"));
+        if (dataObject.GetUtfString("command").Equals("DropToMin3"))
+        {
+            List<GameObject> cards = dominionGame.tmpInst;
+            for (int i = 0; i < cards.Count; i++)
+            {
+                Debug.Log("RRRRRRR " + cards[i].GetComponent<CardInfo>().getName());
+                if (cards[i].GetComponent<CardInfo>().getName().Equals("ров"))
+                {
+                    Debug.Log("RRRRRRR");
+                    return;
+                }
+            }
+            DropSomeCards(2);
+   
+        }else if (dataObject.GetUtfString("command").Equals("MainPlayerDropAnyCards"))
+        {
+            
+            endDropBtn.gameObject.active = true;
+            DropSomeCards(5);
+
+        }
+        else if (dataObject.GetUtfString("command").Equals("DropGoldGetGoldPlus3"))
+        {
+
+            endDropBtn.gameObject.active = true;
+            DropSomeCards(1, "деньги");
+
+        }
+    }
+
+    public void EndDrop()
+    {
+
+        endDropBtn.gameObject.active = false;
+
+        isDropping = false;
+        dropType = "";
+        stateText.text = gameState.ToString();
+        dropping.gameObject.active = false;
+
+        SFSObject num = new SFSObject();
+        num.PutInt("num", 5 - numOfDrop);
+        sfs.Send(new ExtensionRequest("endDrop", num, sfs.LastJoinedRoom));
+
+        Debug.Log("End Drop"+(5 - numOfDrop));
+        numOfDrop = 0;
+    }
+
     public void UpdateStep(SFSObject dataObject)
     {
         Debug.Log("Update step: " + dataObject.GetUtfString("Step"));
         Enum.TryParse(dataObject.GetUtfString("Step"), out GameState state);
         gameState = state;
-        stateText.text = gameState.ToString();
+        currentTurn = dataObject.GetInt("currentTurn");
+        Debug.Log("currentTurn " + currentTurn);
+        Debug.Log("MyTurn " + myTurn);
+
+        if (isDropping)
+        {
+            stateText.text = "Dropping "+ numOfDrop + "cards \n &" + gameState.ToString();
+        }
+        else {
+            stateText.text = gameState.ToString();
+        }
     }
 
     public void endTurn()
@@ -198,22 +303,30 @@ public class GameController : MonoBehaviour
     public void SetStartGame(SFSObject dataObject)
     {
         Debug.Log("Game started!");
-        if(dataObject.GetInt("t") == myId)
+        for(int i = 0; i < dataObject.GetInt("num"); i++)
         {
-            myTurn = "FIRST";
+            if (dataObject.GetInt("t"+i) == myId)
+            {
+                myTurn = i;
+            }
+        }
+
+        Debug.Log(myTurn);
+
+        gameState = GameState.BUY;
+        currentTurn = 0;
+
+        if (isDropping)
+        {
+            stateText.text = "Dropping " + numOfDrop + "cards \n &" + gameState.ToString();
         }
         else
         {
-            myTurn = "SECOND";
+            stateText.text = gameState.ToString();
         }
-        Debug.Log(myTurn);
-
-        gameState = GameState.FIRST_BUY;
-        stateText.text = gameState.ToString();
 
 
-        dominionGame.StartGame(
-                 dataObject.GetSFSArray("cards"), cards);
+        dominionGame.StartGame(dataObject.GetSFSArray("cards"), cards);
     }
 
     public void SetGameOver(string result)

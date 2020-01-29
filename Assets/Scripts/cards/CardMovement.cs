@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class CardMovement : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
+public class CardMovement : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler, IPointerClickHandler
 {
     private Camera mainCamera;
     private Vector3 offset;//значение отступа от центра карты
@@ -19,8 +19,26 @@ public class CardMovement : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
         //LogicManager = FindObjectOfType<LogicManager>();
     }
 
+    public void OnPointerClick(PointerEventData eventData)
+    {
+        Debug.Log("Mouse Clicked on hand card");
+        if (mainCamera.GetComponent<GameController>().isDropping)
+        {
+            if (this.GetComponent<CardInfo>().card.type.Equals(mainCamera.GetComponent<GameController>().dropType)){
+                mainCamera.GetComponent<GameController>().DropCard(this.GetComponent<CardInfo>().getName());
+            }
+        }
+    }
+
     public void OnBeginDrag(PointerEventData eventData)
     {
+        if (mainCamera.GetComponent<GameController>().isDropping)
+        {
+            if (this.GetComponent<CardInfo>().card.type.Equals(mainCamera.GetComponent<GameController>().dropType)){
+                mainCamera.GetComponent<GameController>().DropCard(this.GetComponent<CardInfo>().getName());
+            }
+        }
+
         /*
          * Для получение отступа вычитаем из координат карты координаты мыши
          * в игровой области.
@@ -39,7 +57,11 @@ public class CardMovement : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
             && (mainCamera.GetComponent<GameController>().isMyBuy()||
             mainCamera.GetComponent<GameController>().isMyAction()))));// && LogicManager.isActiveAndEnabled;
 
-        if (!IsDraggable)
+        IsDraggable = IsDraggable && defaultParent.GetComponent<DropPlace>().Type != FieldType.SELF_FIELD;
+        //IsDraggable = IsDraggable && !defaultParent.GetComponent<DominionGame>().actions.text.Equals("0");
+
+
+            if (!IsDraggable)
             return;
 
         tempCardGO.transform.SetParent(defaultParent);

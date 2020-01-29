@@ -15,7 +15,7 @@ public class AuthController : MonoBehaviour
 {
 
     [Tooltip("IP address or domain name of the SmartFoxServer 2X instance")]
-	public string Host = "127.0.0.1";
+	public string Host = "194.58.122.68";
 
     [Tooltip("TCP port listened by the SmartFoxServer 2X instance; used for regular socket connection in all builds except WebGL")]
     public int TcpPort = 9933;
@@ -37,6 +37,17 @@ public class AuthController : MonoBehaviour
 
     public Transform gameListContent;
     public GameObject gameListItem;
+    public GameObject gamePanel;
+    public GameObject findGameBtn;
+    public GameObject createGameBtn;
+    public GameObject players2Btn;
+    public GameObject players3Btn;
+    public GameObject players4Btn;
+
+    public TMP_Text numOfUsers;
+    public TMP_Text created;
+    public TMP_Text ratinginfo;
+    public TMP_Text settingsinfo;
 
     private SmartFox sfs;
     private bool firstJoin = true;
@@ -63,8 +74,50 @@ public class AuthController : MonoBehaviour
 
     void Update()
     {
+        if (Input.GetKey("escape"))
+        {
+            Debug.Log("QUIT");
+            Application.Quit();
+        }
+
         if (sfs != null)
             sfs.ProcessEvents();
+    }
+
+    public void infoBtn()
+    {
+        if (created.gameObject.activeSelf)
+        {
+            created.gameObject.active = false;
+        }
+        else
+        {
+            created.gameObject.active = true;
+        }
+    }
+
+    public void ratingInfoBtn()
+    {
+        if (ratinginfo.gameObject.activeSelf)
+        {
+            ratinginfo.gameObject.active = false;
+        }
+        else
+        {
+            ratinginfo.gameObject.active = true;
+        }
+    }
+
+    public void settingsInfoBtn()
+    {
+        if (settingsinfo.gameObject.activeSelf)
+        {
+            settingsinfo.gameObject.active = false;
+        }
+        else
+        {
+            settingsinfo.gameObject.active = true;
+        }
     }
 
     //For admin test
@@ -89,6 +142,29 @@ public class AuthController : MonoBehaviour
         passwordInput.text = "test444test444";
     }
 
+    //For admin test
+    public void auth3()
+    {
+        OnSigninButtonClick();
+        OnSubmitButtonClick();
+
+        //должны быть в бд
+        loginInput.text = "player3";
+        passwordInput.text = "player3player3";
+    }
+
+    //For admin test
+    public void auth4()
+    {
+        OnSigninButtonClick();
+        OnSubmitButtonClick();
+
+        //должны быть в бд
+        loginInput.text = "player4";
+        passwordInput.text = "player4player4";
+    }
+
+
     public void OnSigninButtonClick()
     {
         emailInput.gameObject.SetActive(false);
@@ -108,7 +184,7 @@ public class AuthController : MonoBehaviour
         enableLoginUI(false);
 
         ConfigData cfg = new ConfigData();
-        cfg.Host = Host;
+        cfg.Host = "194.58.122.68";
 
 #if !UNITY_WEBGL
         cfg.Port = TcpPort;
@@ -136,6 +212,7 @@ public class AuthController : MonoBehaviour
         sfs.AddEventListener(SFSEvent.EXTENSION_RESPONSE, OnExtensionResponse);
         sfs.AddEventListener(SFSEvent.LOGOUT, LogOut);
 
+        Debug.Log(cfg.Host);
         sfs.Connect(cfg.Host, cfg.Port);
     }
 
@@ -240,6 +317,15 @@ public class AuthController : MonoBehaviour
             User user = (User) evt.Params["user"];
             Debug.Log("Hello " + user.Name);
             AuthLogin.SetActive(false);
+
+            List<Room> rooms = sfs.RoomList;
+            int count = 0;
+            for(int i = 0; i < rooms.Count; i++)
+            {
+                Debug.Log("Room name: "+rooms[i].Name);
+                count += rooms[i].UserCount;
+            }
+            numOfUsers.text = "" + count;
 
             populateGamesList();
 
@@ -352,16 +438,45 @@ public class AuthController : MonoBehaviour
         enableLoginUI(true);
     }
 
+    public void CreateGameClick()
+    {
+        findGameBtn.gameObject.active = false;
+        createGameBtn.gameObject.active = false;
+        players4Btn.gameObject.active = true;
+        players3Btn.gameObject.active = true;
+        players2Btn.gameObject.active = true;
+     }
+
+
+    public void FindGameClick2()
+    {
+        FindGameClick(2);
+    }
+
+    public void FindGameClick3()
+    {
+        FindGameClick(3);
+    }
+
+    public void FindGameClick4()
+    {
+        FindGameClick(4);
+    }
 
     public void FindGameClick()
+    {
+        FindGameClick(2);
+    }
+
+    public void FindGameClick(int num)
     {
 
         // Configure Game Room
         //RoomSettings settings = new RoomSettings(sfs.MySelf.Name + "'s game");
-        RoomSettings settings = new RoomSettings("test1");
+        RoomSettings settings = new RoomSettings(""+num+" players! "+sfs.MySelf.Name);
         settings.GroupId = "games";
         settings.IsGame = true;
-        settings.MaxUsers = 2;
+        settings.MaxUsers = (short)num;
         settings.MaxSpectators = 0;
         settings.Extension = new RoomExtension(EXTENSION_ID, EXTENSION_CLASS);
 
